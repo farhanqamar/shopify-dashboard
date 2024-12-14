@@ -9,10 +9,6 @@ const BlogPosts = () => {
             <div className='flex p-2 py-5'>
                     <p className='text-2xl font-bold text-[#303030]'>Blog Posts</p>
             </div>
-                
-                
-
-        
             <div className="bg-white py-10 rounded-xl border">
                 <div>
                     <img src={Blog_img} className="m-auto" />

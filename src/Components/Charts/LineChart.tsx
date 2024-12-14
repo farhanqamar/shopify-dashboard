@@ -10,6 +10,9 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { ChartData, ChartOptions } from 'chart.js';
+
+
 
 ChartJS.register(
   CategoryScale,
@@ -22,10 +25,10 @@ ChartJS.register(
 );
 
 interface LineChartProps {
-  data?: any;
-  options: any;
-  total?: string;
   mainHeadline: string;
+  total?: string;
+  data: ChartData<'line'>;
+  options: ChartOptions<'line'>;
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data, options, total, mainHeadline }) => {

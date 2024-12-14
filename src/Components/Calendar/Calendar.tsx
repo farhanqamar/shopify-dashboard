@@ -2,15 +2,18 @@ import {  useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+interface CalendarProps {
+  closeHandler: () => void;
+}
 
-const DateFilterContainer = ({closeHandler}:any) => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [startDate, setStartDate] = useState(new Date(new Date().setMonth(new Date().getMonth() - 1))); // Set to previous month
+const Calendar = ({closeHandler}: CalendarProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(new Date(new Date().setMonth(new Date().getMonth() - 1))); // Set to previous month
   const [selectedRange, setSelectedRange] = useState("today");
-  const [data, setData] = useState(null); // State to store fetched or displayed data
+  // const [data, setData] = useState(null); // State to store fetched or displayed data
   
   
-  const handleRangeChange = (range) => {
+  const handleRangeChange = (range: string) => {
     setSelectedRange(range);
     // Logic to calculate the startDate based on the selected range
     const today = new Date();
@@ -34,8 +37,8 @@ const DateFilterContainer = ({closeHandler}:any) => {
 
   const handleShowData = () => {
     // Placeholder logic for displaying or fetching data
-    const result = `Displaying data from ${startDate.toDateString()} to ${selectedDate.toDateString()}`;
-    setData(result);
+    const result = `Displaying data from ${startDate ? startDate.toDateString() : 'N/A'} to ${selectedDate ? selectedDate.toDateString() : 'N/A'}`;
+    // setData(result);
     alert(result); console.log(result); // these 2 for showong data
     closeHandler()
   };
@@ -119,8 +122,7 @@ const DateFilterContainer = ({closeHandler}:any) => {
           </button>
           <button
             onClick={handleShowData}
-            className="bg-blue-500 text-white py-2 px-4 rounded"
-          >
+            className="bg-blue-500 text-white py-2 px-4 rounded">
             Apply
           </button>
         </div>
@@ -130,4 +132,4 @@ const DateFilterContainer = ({closeHandler}:any) => {
   );
 };
 
-export default DateFilterContainer;
+export default Calendar;

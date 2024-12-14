@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { IoFilterSharp } from "react-icons/io5";
+
+const apiurl = import.meta.env.VITE_API_URL;
 
 const columnsData = [
   "id",
@@ -11,6 +13,7 @@ const columnsData = [
   "end_date",
   "applicable_products",
 ];
+
 
 const DiscountTable = () => {
   const [discounts, setDiscounts] = useState([]);
@@ -24,7 +27,7 @@ const DiscountTable = () => {
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/store/discounts/");
+        const response = await fetch(`${apiurl}store/discounts/`);
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         setDiscounts(data); // Set the fetched discounts data
@@ -118,12 +121,12 @@ const DiscountTable = () => {
               </tr>
             </thead>
             <tbody>
-              {discounts.map((discount) => (
-                <tr key={discount.id}>
+              {discounts.map((discount, index) => (
+                <tr key={index}>
                   {columnsData.map((column, index) =>
                     visibleColumns[index] && (
                       <td key={index} className="border px-4 py-2">
-                        {discount[column] !== null ? discount[column].toString() : "N/A"}
+                        {discount[column] !== null ? (discount[column] as string).toString() : "N/A"}
                       </td>
                     )
                   )}

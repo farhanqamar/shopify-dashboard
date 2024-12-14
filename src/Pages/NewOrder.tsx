@@ -1,225 +1,199 @@
-import { useState } from 'react';
-import Editor from '../Components/DescriptionInput';
-import ProductCategory from '../Components/ProductCategory';
-import TrackQuantity from '../Components/TrackQuantity';
-import Shipping from '../Components/Shipping';
-import Status from '../Components/Status';
-import Country from '../Components/Country'
-import { LuPlusCircle } from "react-icons/lu";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { MdArrowBack } from "react-icons/md";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
+const apiurl = import.meta.env.VITE_API_URL;
 
-const NewProduct = () => {
-  const [shipping, setShipping] = useState(false)
+const OrderForm = () => {
+  const [customerData, setCustomerData] = useState({
+    fulfillment_status: "pending",
+    payment_status: "pending",
+    order_number: "",
+    email: "",
+    billing_address: "",
+    shipping_address: "",
+    tracking_number: "",
+    total_price: "",
+    subtotal_price: "",
+    shipping_price: "",
+    tax_price: "",
+    discount_price: "",
+    note: "",
+    tags: "",
+  });
+
+  const [paymentStatus, setPaymentStatus] = useState("");
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setCustomerData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const payload = {
+      ...customerData,
+      payment_status: paymentStatus
+    };
+
+    // Print the payload to the console
+    console.log("Payload being sent:", payload);
+
+    try {
+      const response = await fetch(`${apiurl}store/orders/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Order created successfully:", data);
+      } else {
+        console.error("Failed to create order:", response.status, response.statusText);
+        const errorData = await response.json();
+        console.error("Error details:", errorData);
+      }
+    } catch (error) {
+      console.error("Error submitting order:", error);
+    }
+
+    // Reset form data
+    setCustomerData({
+      fulfillment_status: "pending",
+      payment_status: "pending",
+      order_number: "",
+      email: "",
+      billing_address: "",
+      shipping_address: "",
+      tracking_number: "",
+      total_price: "",
+      subtotal_price: "",
+      shipping_price: "",
+      tax_price: "",
+      discount_price: "",
+      note: "",
+      tags: "",
+    });
+    setPaymentStatus("");
+  };
+
   return (
     <section className="sm:px-5 pb-24">
-      
-      {/* Left Section */}
-      <div className='flex justify-center py-5'>
-        <div className='flex items-center w-3/4'>
-          <Link to={'/product'}><MdArrowBack className='text-xl' /></Link>
-          <h1 className="text-lg font-bold p-2">Add Order</h1>
+      <div className="flex justify-center">
+        <div className="py-8 w-2/5">
+          <h1 className="flex text-lg font-bold items-center">
+            <span className="p-[6px] hover:bg-[#D4D4D4] mr-2 rounded-lg cursor-pointer">
+              <Link to={"/order"}>
+                <MdArrowBack />
+              </Link>
+            </span>
+            Create Order
+          </h1>
         </div>
       </div>
 
-      <div className='flex flex-col xl:flex-row justify-center gap-4'>
-
+      <form onSubmit={handleSubmit} className="flex flex-col xl:flex-row justify-center gap-4">
         <div className="w-full xl:w-2/5 space-y-4 m-auto md:m-0">
-          <div className="bg-white shadow-lg sm:rounded-lg px-2 py-4 border">
-            <div>
-              <div className="p-4 rounded-lg space-y-4">
-                <div className="flex flex-col space-y-2">
-                  <label className='font-semibold' htmlFor="title">Title</label>
-                  <input
-                    type="text"
-                    className="p-2 border border-black rounded-lg"
-                  />
-                </div>
-                <div>
-                  <Editor />
-                </div>
-              </div>
-            </div>
-            <div className='px-4 '>
-              <h1 className="text-base font-semibold py-1">Media</h1>
-              <div className="py-2 px-0 rounded-lg border border-dashed border-black text-center">
-                <input type="file" className="py-6 px-5" />
-              </div>
-              <div className='py-3'>
-                <label className="font-semibold py-1" htmlFor="category">
-                  Category
-                </label>
-                <div className=" space-x-2 w-full">
-                  <ProductCategory />
-                </div>
-                <p>
-                  Determines tax rates and adds metafields to improve search,
-                  filters, and cross-channel sales.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Pricing Section */}
-          <div className="bg-white shadow-lg space-y-3 lg:space-y-0 sm:rounded-lg px-4 py-2 border">
-            <div className="border-b py-2">
-              <h1 className="font-bold text-base pb-2">Pricing</h1>
-
-              <div className="flex xl:flex-row flex-col gap-2 overflow-x-hidden">
-                <div className="flex flex-col">
-                  <label htmlFor="price">Price</label>
-                  <input
-                    type="text"
-                    placeholder="Rs 0.00"
-                    className="border border-black rounded-md p-1 w-auto"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <label htmlFor="comparePrice">Compare-at price</label>
-                  <input
-                    type="text"
-                    placeholder="Rs 0.00"
-                    className="border border-black rounded-md p-1 w-auto"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center mt-4">
-                <input type="checkbox" id="chargeTax" />
-                <label htmlFor="chargeTax" className="ml-2">
-                  Charge tax on this product
-                </label>
-              </div>
-            </div>
-
-            <div className="flex 2xl:flex-row flex-col gap-4 py-4 overflow-x-hidden">
-              <div className="flex flex-col">
-                <label htmlFor="cost">Cost Per Item</label>
+          <div className="bg-white shadow-lg sm:rounded-lg px-4 py-2 pb-10 border space-y-4">
+            <h1 className="font-bold text-base pb-2">Customer Information</h1>
+            {[
+              { name: "customer", label: "Customer ID*", placeholder: "Enter customer ID" },
+              { name: "email", label: "Email*", placeholder: "Enter customer email" },
+              { name: "firstName", label: "First Name*", placeholder: "Enter first name" },
+              { name: "lastName", label: "Last Name", placeholder: "Enter last name" },
+              { name: "billing_address", label: "Billing Address", placeholder: "Enter billing address" },
+              { name: "shipping_address", label: "Shipping Address", placeholder: "Enter shipping address" },
+              { name: "tracking_number", label: "Tracking Number", placeholder: "Enter tracking number" }
+            ].map(({ name, label, placeholder }) => (
+              <div key={name} className="flex flex-col space-y-1">
+                <label htmlFor={name}>{label}</label>
                 <input
                   type="text"
-                  placeholder="Rs 0.00"
-                  className="border border-black rounded-md p-1 w-auto"
+                  id={name}
+                  name={name}
+                  value={customerData[name as keyof typeof customerData]}
+                  onChange={handleInputChange}
+                  placeholder={placeholder}
+                  className="border border-black rounded-md p-2 w-full"
                 />
               </div>
-              <div className="flex flex-col">
-                <label htmlFor="profit">Profit</label>
+            ))}
+
+            <h1 className="font-bold text-base pb-2">Order Details</h1>
+            {[
+              { name: "order_number", label: "Order Number", placeholder: "Enter order number" },
+              { name: "note", label: "Note", placeholder: "Add any notes" }
+            ].map(({ name, label, placeholder }) => (
+              <div key={name} className="flex flex-col space-y-1">
+                <label htmlFor={name}>{label}</label>
                 <input
                   type="text"
-                  placeholder="--"
-                  className="border border-black rounded-md p-1 w-auto"
+                  id={name}
+                  name={name}
+                  value={customerData[name as keyof typeof customerData]}
+                  onChange={handleInputChange}
+                  placeholder={placeholder}
+                  className="border border-black rounded-md p-2 w-full"
                 />
               </div>
-              <div className="flex flex-col">
-                <label htmlFor="margin">Margin</label>
-                <input
-                  type="text"
-                  placeholder="--"
-                  className="border border-black rounded-md p-1 w-auto"
-                />
-              </div>
+            ))}
+
+            <h1 className="font-bold text-base pb-2">Payment Status</h1>
+            <select
+              name="paymentStatus"
+              value={paymentStatus}
+              onChange={(e) => setPaymentStatus(e.target.value)}
+              className="border border-black rounded-md p-2 w-full"
+            >
+              <option value="" disabled>Select payment status</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="refunded">Refunded</option>
+              <option value="partially_refunded">Partially Refunded</option>
+            </select>
+            <h1 className="font-bold text-base pb-2">Price Details</h1>
+            <div className="flex flex-wrap gap-4 mt-4">
+              {[
+                { name: "total_price", label: "Total Price" },
+                { name: "subtotal_price", label: "Subtotal Price" },
+                { name: "shipping_price", label: "Shipping Price" },
+                { name: "tax_price", label: "Tax Price" },
+                { name: "discount_price", label: "Discount Price" }
+              ].map(({ name, label }) => (
+                <div key={name} className="flex flex-col space-y-1 w-full sm:w-[48%]">
+                  <label htmlFor={name}>{label}</label>
+                  <input
+                    type="text"
+                    id={name}
+                    name={name}
+                    value={customerData[name as keyof typeof customerData]}
+                    onChange={handleInputChange}
+                    className="border border-black rounded-md p-2 w-full"
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="bg-white shadow-lg py-4 sm:rounded-lg border">
-            <TrackQuantity />
-
-          </div>
-
-          <div className="bg-white shadow-lg p-3 sm:rounded-lg border">
-            <Shipping />
-
-            <div className='border-t flex text-center py-4 space-x-2'>
-              <LuPlusCircle onClick={() => setShipping(!shipping)} className='my-0.5 font-bold' />
-              <p className='font-semibold text-sm'>Add Customs information</p>
-
-            </div>
-
-            {shipping && (<Country />)}
-          </div>
-
-          <div className="space-y-4 bg-white shadow-lg p-3 sm:rounded-lg border">
-            <h1 className='font-bold'>Search engine listing</h1>
-            <p>
-              Add a title and description to see how this product might appear in
-              a search engine listing.
-            </p>
-
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="pageTitle">Page Title</label>
-              <input
-                type="text"
-                className="p-1 border border-black rounded-md"
-              />
-              <p>0-70 characters used</p>
-            </div>
-
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="metaDescription">Meta Description</label>
-              <textarea
-                rows={4}
-                className="p-1 border border-black rounded-md"
-              />
-              <p>0-320 characters used</p>
-            </div>
-
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="urlHandle">URL Handle</label>
-              <input
-                type="text"
-                className="p-1 border border-black rounded-md"
-              />
-            </div>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="mt-4 bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600"
+            >
+              Submit
+            </button>
           </div>
         </div>
-
-        {/* Right Section */}
-        <div className="w-full xl:w-1/3 space-y-4 m-auto md:m-0">
-          <div className="bg-white shadow-lg p-3 sm:rounded-lg">
-            <Status />
-          </div>
-
-          {/* Product Organization Section */}
-          <div className="bg-white shadow-lg p-4 sm:rounded-lg border space-y-2">
-            <h1 className='font-bold'>Product Organization</h1>
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="productType">Product type</label>
-              <input
-                type="text"
-                className="border border-black p-1 rounded-md"
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="vendor">Vendor</label>
-              <input
-                type="text"
-                className="border border-black p-1 rounded-md"
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="collection">Collection</label>
-              <input
-                type="text"
-                className="border border-black p-1 rounded-md"
-              />
-            </div>
-            <div className="flex flex-col space-y-2">
-              <label htmlFor="tag">Tag</label>
-              <input
-                type="text"
-                className="border border-black p-1 rounded-md"
-              />
-            </div>
-          </div>
-
-          <div className='flex justify-end'>
-            <button className='px-4 py-2 rounded-lg bg-black text-white'>Save</button>
-          </div>
-        </div>
-
-      </div>
+      </form>
     </section>
   );
 };
 
-export default NewProduct;
+export default OrderForm;

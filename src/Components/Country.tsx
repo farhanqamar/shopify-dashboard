@@ -1,6 +1,6 @@
 import {useState} from 'react'
+import { countryCodes } from './CountryCodeInput';
 
-import { countryCodes } from './AddProductsComponents/CountryCodeInput';
 
 const Country = () => {
     const [selectedCode, setSelectedCode] = useState('');

@@ -7,66 +7,70 @@ import { GrUserManager } from "react-icons/gr";
 import { SiGoogleanalytics } from "react-icons/si";
 import { RiDiscountPercentLine } from "react-icons/ri";
 import { IoStorefront, } from "react-icons/io5";
-import { IoMdSettings } from "react-icons/io";
+
+
 
 const AdminSideBar = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(null);
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   
 
-  const checkDropdownOpen = (index: any) => {
+  const checkDropdownOpen = (index: number) => {
     setDropdownOpen(dropdownOpen === index ? null : index);
   };
 
-  const handleClick = (index: any) => {
+  const handleClick = (index: number) => {
     setActiveIndex(index);
   };
 
   return (
     <section className='sidebarListStyle md:pl-5 md:pr-3 h-[95.6vh] bg-[#EBEBEB] overflow-auto'>
       <ul>
-        {menuItems.map((item, idx) => (
-          item.index === 8 ? (
-            <div className='flex justify-between pr-1 my-2 relative md:right-[12px]' >
-              <p>Sales channels</p>
-              <span className='relative top-[6px] text-zinc-400'><MdArrowForwardIos /></span>
-            </div>
-          ) : item.index === 11 ?
-            <div className='flex justify-between pr-1 my-2 relative right-[12px]'>
-              <p>Add apps</p>
-              <span className='relative top-[6px] text-zinc-400'><MdArrowForwardIos /></span>
-            </div>
-            : (
-              <div key={idx} className='py-[4px] pl-2'>
-                <Link to={`${item.route}`}>
-                  <li
-                    className={`flex gap-2 py-1 px-3 hover:bg-[#f3f3f3] text-[#212529] text-lg font-semibold rounded-lg ${activeIndex === item.activeIndex ? 'bg-active text-active' : ''}`}
-                    onClick={() => {
-                      handleClick(item.activeIndex);
-                      checkDropdownOpen(item.index);
-                    }}
-                  >
-                    <span className='relative top-1 text-xg'>{item.IconBase}</span>
-                    <span>{item.title}</span>
-                  </li>
-                </Link>
-                {dropdownOpen === item.index && item.items && (
-                  <ul className='dropdown pl-4'>
-                    {item.items.map((subItem, subIdx) => (
-                      <Link to={subItem.route} key={subIdx}>
-                        <li
-                          className={`text-[#75777d] hover:text-black my-[4px] py-1 px-3 hover:bg-[#f3f3f3] text-lg font-semibold rounded-lg ${activeIndex === subItem.activeIndex ? 'bg-active text-active' : ''}`}
-                          onClick={() => handleClick(subItem.activeIndex)}
-                        >
-                          {subItem.label}
-                        </li>
-                      </Link>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )
-        ))}
+      {menuItems.map((item) => (
+  item.index === 8 ? (
+    <div key={item.index} className='flex justify-between pr-1 my-2 relative md:right-[12px]'>
+      <p>Sales channels</p>
+      <span className='relative top-[6px] text-zinc-400'><MdArrowForwardIos /></span>
+    </div>
+  ) : item.index === 11 ? (
+    <div key={item.index} className='flex justify-between pr-1 my-2 relative right-[12px]'>
+      <p>Add apps</p>
+      <span className='relative top-[6px] text-zinc-400'><MdArrowForwardIos /></span>
+    </div>
+  ) : (
+    <div key={item.index} className='py-[4px] pl-2'>
+      <Link to={`${item.route}`}>
+        <li
+          className={`flex gap-2 py-1 px-3 hover:bg-[#f3f3f3] text-[#212529] text-lg font-semibold rounded-lg ${activeIndex === item.activeIndex ? 'bg-active text-active' : ''}`}
+          onClick={() => {
+            if (item.activeIndex !== undefined) {
+              handleClick(item.activeIndex);
+            }
+            checkDropdownOpen(item.index);
+          }}
+        >
+          <span className='relative top-1 text-xg'>{item.IconBase}</span>
+          <span>{item.title}</span>
+        </li>
+      </Link>
+      {dropdownOpen === item.index && item.items && (
+        <ul className='dropdown pl-4'>
+          {item.items.map((subItem) => (
+            <Link to={subItem.route} key={subItem.activeIndex}>
+              <li
+                className={`text-[#75777d] hover:text-black my-[4px] py-1 px-3 hover:bg-[#f3f3f3] text-lg font-semibold rounded-lg ${activeIndex === subItem.activeIndex ? 'bg-active text-active' : ''}`}
+                onClick={() => handleClick(subItem.activeIndex)}
+              >
+                {subItem.label}
+              </li>
+            </Link>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+))}
+
 
         {/* Settings */}
         {/* <div className='absolute bottom-1'>
@@ -114,7 +118,9 @@ const menuItems = [
     activeIndex: 4,
     index: 2,
     items: [
-      { label: 'Collections', route: '/product/collection', activeIndex: 5 },
+      { label: 'Variations', route: '/product/variations', activeIndex: 5 },
+      { label: 'Categories', route: '/product/categories', activeIndex: 6 },
+      // { label: 'Collections', route: '/product/collection', activeIndex: 5 },
       // {  route: '/product/collection/new', activeIndex: 33 },
       // { label: 'Inventory', route: '/product/inventory', activeIndex: 6 },
       // { label: 'Purchase orders', route: '/product/purchase-orders', activeIndex: 7 },

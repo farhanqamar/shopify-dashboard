@@ -1,5 +1,4 @@
 // src/Components/Login.js
-import React from "react";
 import { AiOutlineTwitter } from "react-icons/ai";
 import { BiLogoFacebook } from "react-icons/bi";
 

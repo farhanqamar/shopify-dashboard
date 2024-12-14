@@ -1,0 +1,3 @@
+@echo off
+echo Starting the React development server...
+npm run dev

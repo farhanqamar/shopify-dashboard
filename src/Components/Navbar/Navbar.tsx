@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import NavDropdown from './NavDropdown';
 import useOutsideClick from "../Dropdown/useOutsideClick";
+import AdminSideBar from "../AdminSideBar/AdminSideBar";
+
 import { FiBell } from "react-icons/fi";
 import { MdOutlineSearch } from "react-icons/md";
 import { TiThMenu } from "react-icons/ti";
@@ -8,7 +10,8 @@ import { IoFilter } from "react-icons/io5";
 import { GrStatusGood } from "react-icons/gr";
 import { BsDot } from "react-icons/bs";
 import { FaStore, FaQuestionCircle, FaFileAlt, FaUserFriends, FaKeyboard } from 'react-icons/fa';
-import AdminSideBar from "../AdminSideBar/AdminSideBar";
+
+
 
 const Navbar = () => {
   const [isOpenNavDropdown, setIsOpenNavDropdown] = useState(false);
@@ -27,7 +30,7 @@ const Navbar = () => {
   useOutsideClick({ ref: dropdownRefNavSidebar, handler: () => setIsOpenNavSidebar(false) });
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
       if (event.ctrlKey && event.key === "k") {
         event.preventDefault();
         setIsOpenNavDropdown((prev) => !prev);
@@ -164,7 +167,11 @@ const Navbar = () => {
   );
 };
 
-const NavInput = ({ onClick }) => {
+interface NavInputProps {
+  onClick: (event: React.MouseEvent<HTMLButtonElement>) => void; // for button click
+}
+
+const NavInput = ({ onClick }: NavInputProps) => {
   return (
     <button
       type="button"

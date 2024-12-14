@@ -1,9 +1,8 @@
 import '../index.scss'
-import Discount_img from '../assets/Discount_img.svg'
+import Discount_img from '../assets/Discount_img.svg';
 import { Link } from 'react-router-dom';
 
 const Discount = () => {
-
 
 
     return (

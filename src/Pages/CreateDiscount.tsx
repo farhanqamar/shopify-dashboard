@@ -108,7 +108,7 @@ const CreateDiscount = () => {
                 </div>
                 <div >
                     <h1 className='text-base'>Details</h1>
-                    <li>Can’t combine with other discounts</li>
+                    <li>Can't combine with other discounts</li>
                 </div>
             </div>
             <div className='bg-white rounded-lg p-4 space-y-4 items-center'>
@@ -124,4 +124,4 @@ const CreateDiscount = () => {
   )
 }
 
-export default CreateDiscount
+export default CreateDiscount;

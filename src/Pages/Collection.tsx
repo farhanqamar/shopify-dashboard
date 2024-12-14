@@ -1,6 +1,6 @@
 import { BiSearch } from "react-icons/bi";
 import { IoFilterSharp } from "react-icons/io5";
-import { IoMdAdd } from "react-icons/io"
+import { IoMdAdd } from "react-icons/io";
 import { MdOutlineAddHome } from "react-icons/md";
 import { Link } from "react-router-dom";
 
@@ -47,14 +47,8 @@ const Collection = () => {
                     </tr>
                 </table>
             </div>
-            
     </section>
-        
-
-                    
-           
-        
   )
 }
 
-export default Collection
+export default Collection;

@@ -2,31 +2,33 @@ import React, { useRef, useState } from 'react';
 import '../../index.scss';
 import Calendar from '../../Components/Calendar/Calendar'; // Update this import to point to your new Calendar component
 import LineChart from '../../Components/Charts/LineChart';
-import { CiCalendar } from "react-icons/ci";
 import useOutsideClick from '../../Components/Dropdown/useOutsideClick';
+import { CiCalendar } from "react-icons/ci";
+import { TooltipItem } from 'chart.js';
+
 
 const Analytics: React.FC = () => {
   const [showCalendar, setShowCalendar] = useState(false);
-  const [isOpenCalendar, setIsOpenCalendar] = useState(false);
+  // const [isOpenCalendar, setIsOpenCalendar] = useState(false);
 
   const dropdownRefLogin = useRef(null);
 
   useOutsideClick({
     ref: dropdownRefLogin,
     handler: () => {
-      setIsOpenCalendar(false)
+      // setIsOpenCalendar(false)
     }
   });
 
   // Current Date and yesterDay Date
   const currentDate = new Date();
-  let dateoption : Intl.DateTimeFormatOptions = {month: "short", day: 'numeric', year:'numeric'} 
-  let dateFormate = currentDate.toLocaleDateString('en-US', dateoption)
+  const dateoption : Intl.DateTimeFormatOptions = {month: "short", day: 'numeric', year:'numeric'} 
+  const dateFormate = currentDate.toLocaleDateString('en-US', dateoption)
   
-  let Yesterday = new Date(currentDate)
+  const Yesterday = new Date(currentDate)
   Yesterday.setDate(Yesterday.getDate() -1)
-  let yesterdayDateoption : Intl.DateTimeFormatOptions = {month: "short", day: 'numeric', year:'numeric'} 
-  let yesterdayDateFormat = Yesterday.toLocaleDateString('en-US', yesterdayDateoption)
+  const yesterdayDateoption : Intl.DateTimeFormatOptions = {month: "short", day: 'numeric', year:'numeric'} 
+  const yesterdayDateFormat = Yesterday.toLocaleDateString('en-US', yesterdayDateoption)
   
 
   console.log(yesterdayDateFormat);
@@ -68,9 +70,10 @@ const Analytics: React.FC = () => {
         mode: 'index' as const,
         intersect: false,
         callbacks: {
-          label: (context: any) => {
-            return  `${context.label}, ${context.parsed.y}: Rs ${context.raw.toFixed(2)};`
-          },
+          label: (context: TooltipItem<'line'>) => {
+            const rawValue = context.raw as number; // Cast raw to number
+            return `${context.label}, ${context.parsed.y}: Rs ${rawValue.toFixed(2)};`;
+          }
         },
       },
     },
@@ -99,7 +102,7 @@ const Analytics: React.FC = () => {
   };
   
 
-  const handleCalendarToggle = ():any => {
+  const handleCalendarToggle = (): void => {
     setShowCalendar((prevState) => !prevState); // Toggle the state
   };
 
